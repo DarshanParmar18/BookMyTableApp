@@ -1,0 +1,72 @@
+<header class="nav">
+  <div
+    class="container-fluid d-flex py-2 justify-content-between align-items-center"
+  >
+    <div class="toggle" (click)="toggle()"></div>
+
+    <div class="logo" routerLink="home">
+      <h4>BookMyTable</h4>
+      <!-- <img src="../../../assets/logo/PNG-Logo.png" alt="" /> -->
+    </div>
+
+    <ul class="nav-links">
+      <li>
+        <span routerLink="home" routerLinkActive="active-bg" (click)="toggle()">
+          Home
+        </span>
+      </li>
+      <li>
+        <span
+          routerLink="about"
+          routerLinkActive="active-bg"
+          (click)="toggle()"
+        >
+          About Us
+        </span>
+      </li>
+      <li>
+        <span
+          routerLink="searchRestaurant"
+          routerLinkActive="active-bg"
+          (click)="toggle()"
+        >
+          Menu
+        </span>
+      </li>
+      <li>
+        <span
+          routerLink="/contact-us"
+          routerLinkActive="active-bg"
+          (click)="toggle()"
+        >
+          <a href="https://wa.me/9270065180?text=Hi..." target="_blank">
+            Contact Us
+          </a>
+        </span>
+      </li>
+      <li class="d-none d-sm-block">
+        <span
+          routerLink="/checkout"
+          routerLinkActive="active-bg"
+          (click)="toggle()"
+        >
+          <!-- <div class="d-flex align-items-end justify-content-center">
+            <i class="material-icons cart">
+              <div *ngIf="(cartCount$ | async) > 0" class="cart-number">
+                <p>{{ cartCount$ | async }}</p>
+              </div>
+              shopping_cart
+            </i>
+            <div class="px-1">cart</div>
+          </div> -->
+        </span>
+      </li>
+    </ul>
+    <i routerLink="/checkout" class="material-icons cart mobile-cart">
+      <!-- <div *ngIf="(cartCount$ | async) > 0" class="cart-number">
+        <p>{{ cartCount$ | async }}</p>
+      </div> -->
+      shopping_cart
+    </i>
+  </div>
+</header>

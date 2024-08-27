@@ -1,0 +1,46 @@
+<div class="container-fluid h-50">
+  <div class="container bg-black rounded">
+    <div class="row">
+      <div class="">
+        <mat-form-field class="example-full-width">
+          <mat-label>Choose a date</mat-label>
+          <input
+            matInput
+            [min]="minDate"
+            [max]="maxDate"
+            [matDatepicker]="picker"
+            [(ngModel)]="date"
+            (dateChange)="onDateChange()"
+          />
+          <mat-hint>DD/MM/YYYY</mat-hint>
+          <mat-datepicker-toggle
+            matIconSuffix
+            [for]="picker"
+          ></mat-datepicker-toggle>
+          <mat-datepicker #picker [disabled]="false"></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- -----------------------------datepicker--------------------------- -->
+<!-- <div class="">
+  <mat-form-field class="example-full-width">
+    <mat-label>Choose a date</mat-label>
+    <input
+      matInput
+      [min]="minDate"
+      [max]="maxDate"
+      [matDatepicker]="picker"
+      [(ngModel)]="date"
+      (dateChange)="onDateChange()"
+    />
+    <mat-hint>DD/MM/YYYY</mat-hint>
+    <mat-datepicker-toggle
+      matIconSuffix
+      [for]="picker"
+    ></mat-datepicker-toggle>
+    <mat-datepicker #picker [disabled]="false"></mat-datepicker>
+  </mat-form-field>
+</div> -->
