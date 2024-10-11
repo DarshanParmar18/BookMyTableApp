@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FooterComponent } from './core/components/footer/footer.component';
 import { HeaderComponent } from './core/components/header/header.component';
+import { environment } from '../environments/environment.development';
 
 @Component({
   selector: 'app-root',

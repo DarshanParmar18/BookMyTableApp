@@ -82,30 +82,55 @@ export class HomeComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    const inputElement = this.locationInput.nativeElement;
-
     this.getRestaurant();
 
-    const autocomplete = this.googlePlacesService.initializeAutocomplete(
-      inputElement,
-      {
-        types: ['(cities)'], // Limit suggestions to cities
-      }
-    );
+    // const inputElement = this.locationInput.nativeElement;
 
-    // restrict to a specific country (e.g., 'IN')
-    this.googlePlacesService.restrictAutocompleteToCountry(autocomplete, 'IN');
+    this.googlePlacesService.loadGoogleMaps().then(() => {
+      const inputElement = this.locationInput.nativeElement;
 
-    // Add listener for place selection
-    autocomplete.addListener('place_changed', () => {
-      const place = autocomplete.getPlace();
-      if (place) {
-        console.log('Selected Place:', place);
-        this.handlePlaceSelection(place);
-        // You can handle the place object and display suggestions below
-      }
+      const autocomplete = this.googlePlacesService.initializeAutocomplete(
+        inputElement,
+        {
+          types: ['(cities)'], // Limit suggestions to cities
+        }
+      );
+
+      // restrict to a specific country (e.g., 'IN')
+      this.googlePlacesService.restrictAutocompleteToCountry(
+        autocomplete,
+        'IN'
+      );
+
+      // Add listener for place selection
+      autocomplete.addListener('place_changed', () => {
+        const place = autocomplete.getPlace();
+        if (place) {
+          console.log('Selected Place:', place);
+          this.handlePlaceSelection(place);
+        }
+      });
     });
-    // // update restaurant by location
+
+    // const autocomplete = this.googlePlacesService.initializeAutocomplete(
+    //   inputElement,
+    //   {
+    //     types: ['(cities)'], // Limit suggestions to cities
+    //   }
+    // );
+
+    // // restrict to a specific country (e.g., 'IN')
+    // this.googlePlacesService.restrictAutocompleteToCountry(autocomplete, 'IN');
+
+    // // Add listener for place selection
+    // autocomplete.addListener('place_changed', () => {
+    //   const place = autocomplete.getPlace();
+    //   if (place) {
+    //     console.log('Selected Place:', place);
+    //     this.handlePlaceSelection(place);
+    //     // You can handle the place object and display suggestions below
+    //   }
+    // });
   }
 
   handlePlaceSelection(place: google.maps.places.PlaceResult) {
@@ -116,7 +141,7 @@ export class HomeComponent implements OnInit {
     const locationParts = this.searchLocations()
       .split(',')
       .map((part) => part.trim().toLowerCase());
-    console.log(this.restaurantData);
+    console.log(this.restaurantData());
     let filter = this.restaurantData().filter((restaurant) => {
       const cityMatch = locationParts.includes(restaurant.City.toLowerCase());
       return cityMatch;
