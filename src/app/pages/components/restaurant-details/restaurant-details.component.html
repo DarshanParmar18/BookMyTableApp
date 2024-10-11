@@ -1,0 +1,69 @@
+<div class="h-4/6 w-full">
+  <img
+    src="https://as2.ftcdn.net/v2/jpg/02/94/26/33/1000_F_294263329_1IgvqNgDbhmQNgDxkhlW433uOFuIDar4.jpg"
+    alt="hotel"
+    class="h-full w-full object-cover"
+  />
+</div>
+
+<div class="container flex justify-between mx-auto">
+  <div
+    class="bg-white rounded-md w-5/12 h-16 relative -top-6 content-center shadow-md"
+  >
+    <ul class="nav-links flex justify-around">
+      <li>
+        <span
+          routerLink="overview"
+          routerLinkActive="active-bg"
+          class="font-semibold"
+        >
+          Overview
+        </span>
+      </li>
+      <li>
+        <span
+          routerLink="experiences"
+          routerLinkActive="active-bg"
+          class="font-semibold"
+        >
+          Experiences
+        </span>
+      </li>
+      <li>
+        <span
+          routerLink="menu"
+          routerLinkActive="active-bg"
+          class="font-semibold"
+        >
+          Menu
+        </span>
+      </li>
+      <li>
+        <span
+          routerLink="photos"
+          routerLinkActive="active-bg"
+          class="font-semibold"
+        >
+          Photos
+        </span>
+      </li>
+      <li>
+        <span
+          routerLink="reviews"
+          routerLinkActive="active-bg"
+          class="font-semibold"
+        >
+          Reviews
+        </span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="">
+    <app-booking></app-booking>
+  </div>
+</div>
+
+<div class="">
+  <router-outlet></router-outlet>
+</div>

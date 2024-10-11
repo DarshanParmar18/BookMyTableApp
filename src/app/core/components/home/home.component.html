@@ -1,46 +1,174 @@
-<div class="container-fluid h-50">
-  <div class="container bg-black rounded">
-    <div class="row">
-      <div class="">
-        <mat-form-field class="example-full-width">
-          <mat-label>Choose a date</mat-label>
-          <input
-            matInput
-            [min]="minDate"
-            [max]="maxDate"
-            [matDatepicker]="picker"
-            [(ngModel)]="date"
-            (dateChange)="onDateChange()"
+<div class="container mx-auto">
+  <div class="md:h-60 mt-8 rounded-xl bg-slate-300"></div>
+  <div class="rounded-full h-36 w-full flex justify-between items-center">
+    <div class="w-3/6 flex justify-between items-center">
+      <div
+        class="block w-52 h-11 p-2 text-sm text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      >
+        <form class="flex items-center relative">
+          <img
+            src="https://img.icons8.com/ios-glyphs/30/marker--v1.png"
+            class="h-5 ml-1"
+            alt="Location icon"
           />
-          <mat-hint>DD/MM/YYYY</mat-hint>
-          <mat-datepicker-toggle
-            matIconSuffix
-            [for]="picker"
-          ></mat-datepicker-toggle>
-          <mat-datepicker #picker [disabled]="false"></mat-datepicker>
-        </mat-form-field>
+          <input
+            type="search"
+            name="location"
+            id="locationInput"
+            #locationInput
+            placeholder="Locations"
+            [ngModel]="searchLocations()"
+            class="border-none w-11/12 h-7 bg-inherit focus:ring-0 placeholder:text-slate-700 px-2 text-sm relative"
+            autocomplete="off"
+          />
+        </form>
+      </div>
+      <div
+        class="block w-52 h-11 p-2 text-sm text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 shadow-md"
+      >
+        <div
+          class="flex justify-between items-center"
+          (click)="toggleDropdown('cuisine')"
+        >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/10182/10182745.png"
+            class="h-6 ml-1"
+            alt="cuisine"
+          />
+
+          <input
+            type="text"
+            name="cuisine"
+            id="cuisine"
+            placeholder="Select Cuisine"
+            [value]="selectedCuisine()"
+            readonly
+            class="border-none w-9/12 h-7 bg-inherit focus:ring-0 placeholder:text-slate-700 px-2 text-sm cursor-pointer"
+            autocomplete="off"
+          />
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/5176/5176389.png"
+            class="dropdown-arrow h-3 mr-1 transition"
+            [ngClass]="{ 'rotate-180': activeDropdown === 'cuisine' }"
+            alt="dropdown arrow"
+          />
+        </div>
+        @if( activeDropdown === 'cuisine' ){
+        <div
+          class="relative bg-slate-200 rounded-md px-2 py-3 my-2.5 w-full transition shadow-md"
+        >
+          <ul class="w-full h-full">
+            @for(cuisine of Cuisines; track $index){
+            <li
+              class="border-b-slate-100 border-b-2 pt-1.5 pb-0.5 font-semibold hover:bg-slate-300 cursor-pointer transition"
+              (click)="onSelectCuisine(cuisine)"
+            >
+              {{ cuisine }}
+            </li>
+            }
+            <li
+              class="text-end pt-2 mr-1 font-semibold hover:text-blue-800 cursor-pointer transition"
+              (click)="onClear('cuisine')"
+            >
+              clear
+            </li>
+          </ul>
+        </div>
+        }
+      </div>
+      <div
+        class="block w-52 h-11 p-2 text-sm text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 shadow-md"
+      >
+        <div
+          class="flex justify-between items-center"
+          (click)="toggleDropdown('restaurantType')"
+        >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/230/230288.png "
+            class="h-6 mx-1"
+            alt="Location icon"
+          />
+          <input
+            type="text"
+            name="restaurantType"
+            id="restaurantType"
+            placeholder="Restaurant Type"
+            [value]="selectedRestaurantType()"
+            readonly
+            class="border-none w-9/12 h-7 bg-inherit focus:ring-0 placeholder:text-slate-700 px-2 text-sm cursor-pointer"
+            autocomplete="off"
+          />
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/5176/5176389.png"
+            class="dropdown-arrow h-3 mr-1 transition"
+            [ngClass]="{ 'rotate-180': activeDropdown === 'restaurantType' }"
+            alt="dropdown arrow"
+          />
+        </div>
+        @if(activeDropdown === 'restaurantType' ){
+        <div
+          class="relative bg-slate-200 rounded-md px-2 py-3 my-2.5 w-full transition opacity-100"
+        >
+          <ul class="w-full h-full">
+            @for(type of RestaurantTypes; track $index){
+            <li
+              class="border-b-slate-100 border-b-2 pt-1.5 pb-0.5 font-semibold hover:bg-slate-300 cursor-pointer transition"
+              (click)="onSelectRestaurantType(type)"
+            >
+              {{ type }}
+            </li>
+            }
+            <li
+              class="text-end pt-2 mr-1 font-semibold hover:text-blue-800 cursor-pointer transition"
+              (click)="onClear('restaurantType')"
+            >
+              clear
+            </li>
+          </ul>
+        </div>
+        }
+      </div>
+    </div>
+    <!-- ------------------ filter right ------- -->
+    <div class="w-5/12 flex justify-end items-center">
+      <div
+        class="block w-72 h-11 p-2 text-sm text-gray-900 border border-gray-300 rounded-full bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+      >
+        <div class="flex justify-between items-center">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/3287/3287968.png"
+            class="h-4 mx-2"
+            alt="Location icon"
+          />
+          <input
+            type="search"
+            name="searchRestaurant"
+            id="searchRestaurant"
+            placeholder="Search Restaurants"
+            [(ngModel)]="searchRestaurant"
+            class="border-none w-11/12 h-7 bg-inherit focus:ring-0 placeholder:text-slate-700 px-2 text-sm"
+            autocomplete="off"
+          />
+        </div>
+        @if(searchRestaurant() && restaurantData() ){
+        <div class="relative bg-slate-200 rounded-md px-2 py-3 my-2.5 w-full">
+          <ul class="w-full h-full">
+            @for(restaurant of restaurantData(); track $index){
+            <li
+              class="border-b-slate-100 border-b-2 pt-1.5 pb-0.5 font-semibold hover:bg-slate-300 cursor-pointer transition"
+            >
+              {{ restaurant.Name }}
+            </li>
+            }
+          </ul>
+        </div>
+        }
       </div>
     </div>
   </div>
-</div>
 
-<!-- -----------------------------datepicker--------------------------- -->
-<!-- <div class="">
-  <mat-form-field class="example-full-width">
-    <mat-label>Choose a date</mat-label>
-    <input
-      matInput
-      [min]="minDate"
-      [max]="maxDate"
-      [matDatepicker]="picker"
-      [(ngModel)]="date"
-      (dateChange)="onDateChange()"
-    />
-    <mat-hint>DD/MM/YYYY</mat-hint>
-    <mat-datepicker-toggle
-      matIconSuffix
-      [for]="picker"
-    ></mat-datepicker-toggle>
-    <mat-datepicker #picker [disabled]="false"></mat-datepicker>
-  </mat-form-field>
-</div> -->
+  <app-restaurants
+    [restaurantData]="filteredRestaurants"
+    [isloading]="isloading"
+  ></app-restaurants>
+</div>

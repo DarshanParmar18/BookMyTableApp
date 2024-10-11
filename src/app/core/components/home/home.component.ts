@@ -1,63 +1,164 @@
 import {
   Component,
   computed,
-  effect,
+  ElementRef,
   inject,
   OnInit,
-  Signal,
   signal,
+  ViewChild,
 } from '@angular/core';
-import { DateAdapter, provideNativeDateAdapter } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { Router, RouterOutlet } from '@angular/router';
-import { FormsModule } from '@angular/forms';
-import { SearchRestaurantComponent } from '../../../pages/components/search-restaurant/search-restaurant.component';
-import { SearchRestaurantService } from '../../../pages/services/search-restaurant.service';
-import { DatePipe } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+
+import { AsyncPipe, DatePipe, NgClass } from '@angular/common';
+
+import { GooglePlacesService } from '../../../pages/services/google-places.service';
+import { BookingComponent } from '../../../pages/components/booking/booking.component';
+import { RestaurantsComponent } from '../../../pages/components/search-restaurant/restaurants.component';
+import { RestaurantService } from '../../../pages/services/restaurant.service';
+import { delay } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  providers: [provideNativeDateAdapter()],
+  providers: [],
   imports: [
-    MatFormFieldModule,
-    MatInputModule,
-    MatDatepickerModule,
-    SearchRestaurantComponent,
     FormsModule,
-    RouterOutlet,
+    ReactiveFormsModule,
+    AsyncPipe,
+    DatePipe,
+    BookingComponent,
+    NgClass,
+    RestaurantsComponent,
   ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
-  private router = inject(Router);
-  private searchRestaurantService = inject(SearchRestaurantService);
+  @ViewChild('locationInput', { static: true }) locationInput!: ElementRef;
+  private googlePlacesService = inject(GooglePlacesService);
+  private restaurantService = inject(RestaurantService);
 
-  private readonly _currentTime = new Date().getTime();
-  readonly minDate = new Date(this._currentTime);
-  readonly maxDate = new Date(this._currentTime + 432000000); // 432000000 is 5 days
+  searchLocations = signal('Pune, Maharashtra, India');
+  searchRestaurant = signal('');
+  searchBranch = signal('');
+  selectedCuisine = signal('');
+  selectedRestaurantType = signal<string>('');
+  restaurantData = signal<any[]>([]);
+  branchesData = signal<any[]>([]);
+  dinningTablesData = signal<any[]>([]);
 
-  date = signal<Date>(new Date(this._currentTime));
+  isloading = signal(false);
 
-  constructor() {
-    effect(
-      () => {
-        const dateChanged = this.date();
-        this.searchRestaurantService.setSelectDate(dateChanged);
-      },
-      { allowSignalWrites: true }
-    );
+  activeDropdown: string | null = null;
+
+  Cuisines = ['Indian', 'Italian', 'French', 'Chineese'];
+  RestaurantTypes = ['Veg', 'Non-Veg', 'Vegan'];
+
+  toggleDropdown(dropdown: string) {
+    this.activeDropdown = this.activeDropdown === dropdown ? null : dropdown;
+    console.log(dropdown);
   }
+  onClear(dropdown: string) {
+    if (dropdown === 'cuisine') {
+      // this.selectedCuisine.set('');
+      this.onSelectCuisine('');
+    } else if (dropdown === 'restaurantType') {
+      // this.selectedRestaurantType.set('');
+      this.onSelectRestaurantType('');
+    }
+    this.activeDropdown = null;
+  }
+
+  onSelectCuisine(cuisine: string) {
+    this.selectedCuisine.set(cuisine);
+    this.activeDropdown = null;
+  }
+
+  onSelectRestaurantType(type: string) {
+    this.selectedRestaurantType.set(type);
+    this.activeDropdown = null;
+  }
+
+  constructor() {}
 
   ngOnInit(): void {
-    console.log(this.date());
+    const inputElement = this.locationInput.nativeElement;
+
+    this.getRestaurant();
+
+    const autocomplete = this.googlePlacesService.initializeAutocomplete(
+      inputElement,
+      {
+        types: ['(cities)'], // Limit suggestions to cities
+      }
+    );
+
+    // restrict to a specific country (e.g., 'IN')
+    this.googlePlacesService.restrictAutocompleteToCountry(autocomplete, 'IN');
+
+    // Add listener for place selection
+    autocomplete.addListener('place_changed', () => {
+      const place = autocomplete.getPlace();
+      if (place) {
+        console.log('Selected Place:', place);
+        this.handlePlaceSelection(place);
+        // You can handle the place object and display suggestions below
+      }
+    });
+    // // update restaurant by location
   }
 
-  onDateChange() {
-    this.router.navigate(['searchRestaurant']);
-    console.log(`onDateChanged: ${this.date()}`);
+  handlePlaceSelection(place: google.maps.places.PlaceResult) {
+    this.searchLocations.set(place.formatted_address || '');
+  }
+
+  filteredRestaurantsByLocation = computed(() => {
+    const locationParts = this.searchLocations()
+      .split(',')
+      .map((part) => part.trim().toLowerCase());
+    console.log(this.restaurantData);
+    let filter = this.restaurantData().filter((restaurant) => {
+      const cityMatch = locationParts.includes(restaurant.City.toLowerCase());
+      return cityMatch;
+    });
+    console.log(filter);
+    console.log(this.searchLocations());
+    return filter;
+  });
+
+  filteredRestaurants = computed(() => {
+    // let data = this.restaurantData();
+
+    if (this.filteredRestaurantsByLocation().length <= 0) {
+      console.log('empty');
+      return [];
+    }
+
+    let filterRestaurants = this.filteredRestaurantsByLocation();
+    if (this.selectedCuisine()) {
+      filterRestaurants = filterRestaurants.filter((f: any) =>
+        f.Cuisines.includes(this.selectedCuisine())
+      );
+    }
+    if (this.selectedRestaurantType()) {
+      filterRestaurants = filterRestaurants.filter((f) =>
+        f.Types.includes(this.selectedRestaurantType())
+      );
+    }
+    console.log(filterRestaurants);
+    return filterRestaurants;
+    // return data;
+  });
+
+  getRestaurant() {
+    this.isloading.set(true);
+    this.restaurantService
+      .getRestaurants()
+      .pipe(delay(2000))
+      .subscribe((res) => {
+        this.restaurantData.set(res);
+        this.isloading.set(false);
+        console.log(this.restaurantData());
+      });
   }
 }

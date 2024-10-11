@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SearchRestaurantComponent } from './search-restaurant.component';
+import { SearchRestaurantComponent } from './restaurants.component';
 
 describe('SearchRestaurantComponent', () => {
   let component: SearchRestaurantComponent;
@@ -8,9 +8,8 @@ describe('SearchRestaurantComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SearchRestaurantComponent]
-    })
-    .compileComponents();
+      imports: [SearchRestaurantComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(SearchRestaurantComponent);
     component = fixture.componentInstance;

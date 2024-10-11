@@ -3,7 +3,7 @@
   width: 100%;
   box-shadow: 2px 2px 5px 1px #0000002e;
   position: sticky;
-  top: 0;
+  top: 0%;
   z-index: 1000;
   background-color: white;
 
@@ -58,16 +58,16 @@
 
     span:hover:after {
       width: 100%;
-      background: var(--primary-color);
+      background: rgb(133, 133, 255);
     }
 
     span:focus:after {
       width: 100%;
-      background: var(--primary-color);
+      background: rgb(133, 133, 255);
     }
 
     span:hover {
-      color: var(--primary-color) !important;
+      color: rgb(133, 133, 255) !important;
     }
   }
 
@@ -77,7 +77,7 @@
   }
 
   .active-bg {
-    color: var(--primary-color) !important;
+    color: rgb(133, 133, 255) !important;
   }
 
   .active-bg:after {
@@ -86,7 +86,7 @@
     margin: auto;
     height: 2px;
     width: 100% !important;
-    background: var(--primary-color) !important;
+    background: rgb(133, 133, 255) !important;
     transition: width 0.5s ease, background-color 0.5s ease;
   }
 
@@ -235,6 +235,26 @@ a {
 @media (max-width: 992px) {
   .mobile-cart {
     display: block;
+  }
+}
+.cart {
+  position: relative; /* Ensure position is set for absolute positioning of cart-number */
+  .cart-number {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    height: 20px;
+    width: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p {
+      font-size: 12px;
+      margin: 0;
+    }
   }
 }
 .cart {
